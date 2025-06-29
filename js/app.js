@@ -166,14 +166,14 @@ class WindVisualizer {
     // Determine scale and margins to preserve aspect ratio
     let drawWidth, drawHeight, offsetX, offsetY;
     if (viewportAspect > islandAspect) {
-      // Viewport is wider than island: fit height
-      drawHeight = screenHeight * 0.9;
+      // Viewport is wider than island: fit height with more margin
+      drawHeight = screenHeight * 0.75; // Reduced from 0.9 to 0.75 for more margin
       drawWidth = drawHeight * islandAspect;
       offsetY = (screenHeight - drawHeight) / 2;
       offsetX = (screenWidth - drawWidth) / 2;
     } else {
-      // Viewport is taller than island: fit width
-      drawWidth = screenWidth * 0.9;
+      // Viewport is taller than island: fit width with more margin
+      drawWidth = screenWidth * 0.75; // Reduced from 0.9 to 0.75 for more margin
       drawHeight = drawWidth / islandAspect;
       offsetX = (screenWidth - drawWidth) / 2;
       offsetY = (screenHeight - drawHeight) / 2;
@@ -860,19 +860,21 @@ class WindVisualizer {
     const viewportAspect = screenWidth / screenHeight;
     let drawWidth, drawHeight;
     if (viewportAspect > islandAspect) {
-      drawHeight = screenHeight * 0.9;
+      // Use a smaller percentage to provide more margin
+      drawHeight = screenHeight * 0.75; // Reduced from 0.9 to 0.75
       drawWidth = drawHeight * islandAspect;
     } else {
-      drawWidth = screenWidth * 0.9;
+      // Use a smaller percentage to provide more margin
+      drawWidth = screenWidth * 0.75; // Reduced from 0.9 to 0.75
       drawHeight = drawWidth / islandAspect;
     }
     // The spreadFactor is used in getGeographicPosition, so we need to reverse it
     const spreadFactor = 2.4;
-    // Calculate the zoom so that the furthest points fit in the viewport
+    // Calculate the zoom so that the furthest points fit in the viewport with extra margin
     const fitZoom = Math.min(
       drawWidth / (screenWidth * spreadFactor),
       drawHeight / (screenHeight * spreadFactor)
-    ) * spreadFactor;
+    ) * spreadFactor * 0.8; // Additional 20% zoom out for extra margin
     this.zoom = fitZoom;
     this.panX = 0;
     this.panY = 0;
