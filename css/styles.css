@@ -1,0 +1,634 @@
+/* Wellington Wind Visualizer - Redesigned */
+
+body {
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  background: #181818;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+#halftone-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+  background: transparent;
+}
+
+#map-zoom-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  will-change: transform;
+}
+
+.wind-canvas {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.location-name {
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-size: 1.3vw;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.2vw;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(.4,2,.6,1);
+  user-select: none;
+  text-align: left;
+  white-space: nowrap;
+  transform-origin: center center;
+  position: relative;
+  pointer-events: none;
+}
+
+.location-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  pointer-events: none;
+}
+
+.wind-triangle {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-left: 0.7vw;
+  vertical-align: middle;
+  background: none;
+  border: none;
+}
+.wind-triangle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: #111;
+}
+
+.wind-info {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #111;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  white-space: normal;
+  z-index: 10;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1em;
+}
+
+.wind-info .wind-compass,
+.wind-info .wind-speed,
+.wind-info .wind-temp {
+  display: block;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+.wind-info .wind-speed,
+.wind-info .wind-compass {
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-size: 0.95em;
+  font-weight: 500;
+  line-height: 1.1;
+  color: #111;
+  background: none;
+  margin-right: 0;
+}
+
+.wind-temp {
+  color: #111 !important;
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-size: 1em;
+  font-weight: 400;
+  margin-left: 0.5em;
+}
+
+#top-left-container {
+  position: fixed;
+  top: 2vw;
+  left: 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 4000; /* Higher than hotspot overlay */
+  gap: 0.2vw;
+}
+#top-left-container #app-title,
+#top-left-container .slider-date-pill,
+#top-left-container .slider-time-pill {
+  font-size: 26px !important;
+  line-height: 1.1;
+}
+#top-left-container #app-title {
+  font-size: 2vw;
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  pointer-events: none;
+  margin: 0;
+}
+#top-left-container .slider-date-pill {
+  position: static;
+  font-size: 1.2vw;
+  color: #fff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  pointer-events: none;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  text-align: left;
+  min-width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+}
+#top-left-container .slider-time-pill {
+  position: static;
+  font-size: 2vw;
+  color: #fff;
+  background: none;
+  pointer-events: none;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  text-align: left;
+  min-width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+}
+
+.api-status.bottom-right {
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+  background: none;
+  flex-direction: row;
+  pointer-events: none;
+  margin-left: 1vw;
+}
+.api-status.bottom-right .status-text {
+  order: 1;
+  font-size: 20px;
+}
+.api-status.bottom-right .status-dot {
+  order: 2;
+  margin-left: 0.5vw;
+  margin-right: 0;
+}
+
+.status-dot {
+  width: 1vw;
+  height: 1vw;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0.5vw #00ff44cc;
+  animation: blink-green 1.2s infinite alternate;
+}
+.status-dot.connected { background: #00ff44; }
+.status-dot.error { background: #ff0044; animation: blink-red 1.2s infinite alternate; }
+@keyframes blink-green { 0%{opacity:1;} 100%{opacity:0.3;} }
+@keyframes blink-red { 0%{opacity:1;} 100%{opacity:0.3;} }
+.status-text {
+  font-size: 1vw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.slider-bar {
+  position: fixed;
+  bottom: 2vw;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  z-index: 4000; /* Higher than hotspot overlay */
+  pointer-events: auto;
+  padding: 0 2vw;
+  box-sizing: border-box;
+}
+.slider-play-btn {
+  margin-left: 0;
+  margin-right: 1vw;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  pointer-events: auto;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slider-play-btn:hover {
+  background: #222;
+}
+.slider-date-pill, .historical-slider {
+  box-shadow: none !important;
+  background: none !important;
+}
+.historical-slider {
+  flex: 1;
+  height: 16px; /* Fixed height instead of viewport units */
+  background: #888;
+  border-radius: 8px; /* Fixed border radius */
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-right: 0;
+  pointer-events: auto;
+  box-shadow: none;
+  border: 1px solid #666;
+  z-index: 1001;
+}
+.historical-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px; /* Fixed width */
+  height: 20px; /* Fixed height */
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: none;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  transition: background 0.3s;
+  z-index: 1002;
+}
+.historical-slider::-webkit-slider-thumb:hover {
+  background: #fff;
+}
+.historical-slider::-moz-range-thumb {
+  width: 20px; /* Fixed width */
+  height: 20px; /* Fixed height */
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: none;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  transition: background 0.3s;
+  z-index: 1002;
+}
+.historical-slider::-moz-range-thumb:hover {
+  background: #fff;
+}
+
+.circle-cell {
+  width: 20vw;
+  height: 20vw;
+  min-width: 160px;
+  min-height: 160px;
+  max-width: 320px;
+  max-height: 320px;
+  border-radius: 50%;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  overflow: visible;
+  position: relative;
+  mix-blend-mode: difference;
+  will-change: transform, opacity;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#background-date {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-size: 24vw;
+  font-weight: 200;
+  color: #fff2;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.03em;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.api-status.top-right {
+  position: fixed;
+  top: 2vw;
+  right: 2vw;
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+  font-size: 14px;
+  font-weight: 300;
+  color: #aaa;
+  background: none;
+  flex-direction: row;
+  pointer-events: none;
+  z-index: 1001;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+.api-status.top-right .status-text {
+  order: 1;
+  font-size: 14px;
+  color: #aaa;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+.api-status.top-right .status-dot {
+  order: 2;
+  margin-left: 0.5vw;
+  margin-right: 0;
+}
+
+.project-name {
+  position: fixed;
+  bottom: 1vw; /* Position at bottom, above the slider */
+  right: 2vw;
+  font-size: 12px;
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-weight: 300;
+  color: #aaa; /* Same color as status text */
+  letter-spacing: 0.05em;
+  text-transform: none;
+  background: none;
+  pointer-events: none;
+  z-index: 1001;
+  text-align: right;
+}
+
+.slider-time-pill {
+  position: fixed;
+  top: calc(3.2vw + 20px + 2px); /* 2px below date */
+  left: 2vw;
+  font-size: 20px;
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 1001;
+  background: none;
+  pointer-events: none;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  text-align: left;
+  min-width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+}
+
+#explore-tip {
+  position: fixed;
+  bottom: calc(2vw + 3vw + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 16px;
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-weight: 400;
+  color: #aaa;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  background: none;
+  pointer-events: none;
+  user-select: none;
+  z-index: 4000; /* Higher than hotspot overlay */
+  display: block;
+  white-space: nowrap;
+  padding: 0 2vw;
+  box-sizing: border-box;
+}
+
+/* Location Modal Styles */
+.location-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.location-modal.active {
+  display: flex;
+}
+
+.location-modal.active ~ #explore-tip,
+.location-modal.active ~ .slider-bar ~ #explore-tip,
+.location-modal.active ~ div #explore-tip {
+  display: none !important;
+}
+
+.modal-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2vw;
+  box-sizing: border-box;
+  pointer-events: none; /* Allow clicks to pass through to elements behind */
+}
+
+.modal-header {
+  position: absolute;
+  top: 2vw;
+  left: 2vw;
+  right: 2vw;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 2001;
+  pointer-events: auto; /* Re-enable pointer events for header */
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 3vw;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0.5vw;
+  border-radius: 50%;
+  width: 4vw;
+  height: 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2vw;
+  text-align: center;
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+.modal-wind-direction,
+.modal-wind-speed,
+.modal-temperature {
+  font-family: 'Space Grotesk', Arial, sans-serif;
+  font-size: 12vw;
+  font-weight: 200;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+.modal-temperature {
+  /* Temperature color will be set dynamically via JavaScript */
+}
+
+.modal-hotspot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  background: rgba(255,255,255,0.01); /* nearly invisible, but clickable */
+  transition: background 0.2s;
+}
+.modal-hotspot:hover {
+  background: rgba(255,255,255,0.08); /* subtle highlight on hover */
+}
+
+@media (max-width: 900px) {
+  .location-name { font-size: 3vw; }
+  .wind-info { font-size: 2vw; }
+  .circle-cell { width: 28vw; height: 28vw; }
+  #background-date { font-size: 36vw; }
+  
+  /* Modal responsive styles */
+  .modal-close { font-size: 6vw; width: 8vw; height: 8vw; }
+  .modal-wind-direction,
+  .modal-wind-speed,
+  .modal-temperature { font-size: 20vw; }
+}
+@media (max-width: 600px) {
+  .location-name { font-size: 5vw; }
+  .wind-info { font-size: 3vw; }
+  .circle-cell { width: 40vw; height: 40vw; }
+  .slider-date-pill { font-size: 2vw; padding: 0.5vw 2vw; }
+  #background-date { font-size: 48vw; }
+  
+  /* Modal responsive styles */
+  .modal-close { font-size: 8vw; width: 10vw; height: 10vw; }
+  .modal-wind-direction,
+  .modal-wind-speed,
+  .modal-temperature { font-size: 24vw; }
+}
+
+#modal-hotspot-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 3000; /* Above wind-canvas, below modal */
+}
+
+#modal-hotspot-overlay .modal-hotspot {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: none;
+  z-index: 3001;
+}
+#modal-hotspot-overlay .modal-hotspot:hover {
+  background: transparent;
+}
+
+.wave-char {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 0.1s linear;
+  user-select: none;
+} 

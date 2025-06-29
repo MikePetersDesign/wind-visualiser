@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Wind Visualizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #181818;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    .test-container {
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .success { background: #4CAF50; }
+    .error { background: #f44336; }
+    .info { background: #2196F3; }
+  </style>
+</head>
+<body>
+  <h1>Wind Visualizer Test</h1>
+  
+  <div class="test-container">
+    <h2>Configuration Test</h2>
+    <div id="config-status" class="status info">Testing configuration...</div>
+  </div>
+  
+  <div class="test-container">
+    <h2>API Test</h2>
+    <div id="api-status" class="status info">Testing API...</div>
+  </div>
+  
+  <div class="test-container">
+    <h2>DOM Elements Test</h2>
+    <div id="dom-status" class="status info">Testing DOM elements...</div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    // Test 1: Configuration
+    function testConfig() {
+      const status = document.getElementById('config-status');
+      try {
+        if (CONFIG && CONFIG.SITES && CONFIG.SITES.length > 0) {
+          status.textContent = `✅ Configuration loaded: ${CONFIG.SITES.length} sites`;
+          status.className = 'status success';
+        } else {
+          throw new Error('CONFIG not properly loaded');
+        }
+      } catch (error) {
+        status.textContent = `❌ Configuration error: ${error.message}`;
+        status.className = 'status error';
+      }
+    }
+
+    // Test 2: API
+    async function testAPI() {
+      const status = document.getElementById('api-status');
+      try {
+        const testSite = CONFIG.SITES[0];
+        const params = new URLSearchParams({
+          latitude: testSite.lat,
+          longitude: testSite.lon,
+          ...CONFIG.API_PARAMS
+        });
+        const url = `${CONFIG.API_BASE_URL}?${params}`;
+        status.textContent = `Testing API call to: ${url}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.current && data.current.wind_speed_10m !== undefined) {
+          status.textContent = `✅ API working: ${testSite.name} - ${data.current.wind_speed_10m} km/h`;
+          status.className = 'status success';
+        } else {
+          throw new Error('No wind data in response');
+        }
+      } catch (error) {
+        status.textContent = `❌ API error: ${error.message}`;
+        status.className = 'status error';
+      }
+    }
+
+    // Test 3: DOM Elements
+    function testDOM() {
+      const status = document.getElementById('dom-status');
+      const requiredElements = [
+        'wind-canvas',
+        'map-zoom-container',
+        'status-dot',
+        'slider-date',
+        'historical-slider',
+        'play-historical'
+      ];
+      
+      const missing = [];
+      requiredElements.forEach(id => {
+        if (!document.getElementById(id)) {
+          missing.push(id);
+        }
+      });
+      
+      if (missing.length === 0) {
+        status.textContent = '✅ All required DOM elements found';
+        status.className = 'status success';
+      } else {
+        status.textContent = `❌ Missing DOM elements: ${missing.join(', ')}`;
+        status.className = 'status error';
+      }
+    }
+
+    // Run tests
+    window.addEventListener('load', () => {
+      testConfig();
+      testAPI();
+      testDOM();
+    });
+  </script>
+</body>
+</html> 

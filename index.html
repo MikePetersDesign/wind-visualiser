@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wind-Visualiser-03</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="background-date"></div>
+  <div id="top-left-container">
+    <div id="app-title">Aotearoa</div>
+    <div class="slider-date-pill" id="slider-date">Loading...</div>
+    <div class="slider-time-pill" id="slider-time"></div>
+  </div>
+  <div id="api-status" class="api-status top-right">
+    <span id="status-dot" class="status-dot"></span>
+    <span id="status-text">API LOADING</span>
+  </div>
+  <div id="project-name" class="project-name">Wind-Visualiser-05</div>
+  <div id="wind-canvas" class="wind-canvas">
+    <div id="map-zoom-container"></div>
+  </div>
+  <div id="modal-hotspot-overlay"></div>
+  
+  <!-- Modal Overlay -->
+  <div id="location-modal" class="location-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button id="modal-close" class="modal-close">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-wind-direction" class="modal-wind-direction"></div>
+        <div id="modal-wind-speed" class="modal-wind-speed"></div>
+        <div id="modal-temperature" class="modal-temperature"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="explore-tip">Click, drag and zoom to explore.</div>
+  <div class="slider-bar">
+    <button id="play-historical" class="slider-play-btn">&#9654;</button>
+    <input type="range" min="0" max="100" value="100" class="historical-slider" id="historical-slider">
+  </div>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html> 
