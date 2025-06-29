@@ -1,7 +1,7 @@
 {
   "name": "Wind-Visualiser-05",
   "version": "1.0.0",
-  "description": "Real-time wind visualization for the Wellington region using Open-Meteo API",
+  "description": "Real-time wind visualization for New Zealand using Open-Meteo API",
   "main": "index.html",
   "scripts": {
     "start": "open index.html",
@@ -11,23 +11,25 @@
   "keywords": [
     "weather",
     "wind",
-    "wellington",
     "new-zealand",
+    "aotearoa",
     "open-meteo",
     "visualization",
     "real-time",
-    "api"
+    "api",
+    "modal",
+    "interactive"
   ],
-  "author": "Wellington Wind Enthusiasts",
+  "author": "Michael Peters",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/wellington-wind-visualizer.git"
+    "url": "https://github.com/MikePetersDesign/wind-visualiser.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/wellington-wind-visualizer/issues"
+    "url": "https://github.com/MikePetersDesign/wind-visualiser/issues"
   },
-  "homepage": "https://github.com/yourusername/wellington-wind-visualizer#readme",
+  "homepage": "https://github.com/MikePetersDesign/wind-visualiser#readme",
   "dependencies": {},
   "devDependencies": {},
   "engines": {

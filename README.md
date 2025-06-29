@@ -1,35 +1,80 @@
 # Wind-Visualiser-05
 
-A real-time wind visualization application for the Wellington region using the Open-Meteo API. This application displays current wind conditions across multiple locations in the Wellington region with beautiful, interactive wind direction arrows and speed indicators.
+A real-time wind visualization application for New Zealand using the Open-Meteo API. This application displays current wind conditions across 25 major locations throughout New Zealand with beautiful, interactive wind direction arrows, speed indicators, and immersive modal overlays.
 
 ## 🌤️ Features
 
-- **Real-time Wind Data**: Live wind speed and direction from Open-Meteo API
-- **Multiple Locations**: 8 locations across the Wellington region
-- **Interactive Visualization**: Rotating wind arrows showing wind direction
-- **Speed Indicators**: Color-coded wind speed bars
-- **Auto-updating**: Refreshes every 5 minutes
+- **Real-time Wind Data**: Live wind speed, direction, and temperature from Open-Meteo API
+- **Nationwide Coverage**: 25 locations across New Zealand (North and South Islands)
+- **Interactive Visualization**: Rotating wind arrows showing wind direction with color-coded speed indicators
+- **Modal Overlays**: Click any location to view detailed wind data in an immersive modal
+- **Wave Displacement Effects**: Dynamic text animation in modals that responds to wind speed and direction
+- **Historical Playback**: Interactive timeline slider to explore historical wind patterns
+- **Auto-updating**: Refreshes every 5 minutes with live data
 - **Responsive Design**: Works on desktop and mobile devices
 - **No API Keys Required**: Completely free to use
+- **Interactive Map**: Pan, zoom, and explore the wind patterns across New Zealand
 
 ## 📍 Locations Covered
 
-- **Wellington CBD**: -41.2866, 174.7756
-- **Wellington Airport**: -41.3272, 174.8053
-- **Lower Hutt**: -41.2167, 174.9333
-- **Upper Hutt**: -41.1333, 175.0667
-- **Porirua**: -41.1333, 174.8500
-- **Kapiti Coast**: -40.8667, 174.9167
-- **Wairarapa**: -41.0000, 175.5000
-- **Castlepoint**: -40.9000, 176.2167
+### North Island
+- **Whangārei**: -35.7251, 174.3237
+- **Auckland**: -36.8485, 174.7633
+- **Hamilton**: -37.7870, 175.2793
+- **Tauranga**: -37.6878, 176.1651
+- **Rotorua**: -38.1368, 176.2497
+- **Taupo**: -38.7873, 175.2793
+- **Gisborne**: -38.6623, 178.0176
+- **New Plymouth**: -39.0556, 174.0752
+- **Napier**: -39.4928, 176.9120
+- **Palmerston North**: -40.3523, 175.6082
+- **Whanganui**: -39.9301, 175.0502
+- **Wellington**: -41.2866, 174.7756
+
+### South Island
+- **Nelson**: -41.2706, 173.2840
+- **Blenheim**: -41.5134, 173.9612
+- **Westport**: -41.7545, 171.6017
+- **Kaikoura**: -42.4000, 173.6833
+- **Christchurch**: -43.5321, 172.6362
+- **Dunedin**: -45.8788, 170.5028
+- **Invercargill**: -46.4132, 168.3538
+- **Queenstown**: -45.0312, 168.6626
+- **Wanaka**: -44.7032, 169.1321
+- **Timaru**: -44.3960, 171.2549
+- **Oamaru**: -45.0970, 170.9707
+- **Greymouth**: -42.4507, 171.2108
+- **Mt Cook**: -43.7350, 170.0967
 
 ## 🚀 Quick Start
 
 1. **Clone or download** this repository
 2. **Open `index.html`** in your web browser
-3. **Enjoy real-time wind data** from across the Wellington region!
+3. **Explore wind patterns** across New Zealand!
+4. **Click any location** to view detailed wind data in a modal overlay
+5. **Use the play button** to explore historical wind patterns
 
 No installation or setup required - just open the HTML file and it will start fetching live wind data immediately.
+
+## 🎮 Interactive Features
+
+### Modal Overlays
+- **Click any location** to open a detailed modal
+- **Real-time updates** during play mode
+- **Wave displacement effects** that respond to wind conditions
+- **Temperature-linked colors** for visual feedback
+- **Close button** to return to the main view
+
+### Play Mode
+- **Historical timeline** with interactive slider
+- **Play/pause controls** for wind pattern exploration
+- **Real-time modal updates** during playback
+- **Smooth transitions** between time periods
+
+### Map Interaction
+- **Pan and zoom** to explore different regions
+- **Persistent hotspots** for reliable location clicking
+- **Responsive design** that works on all screen sizes
 
 ## 📁 Project Structure
 
@@ -37,16 +82,14 @@ No installation or setup required - just open the HTML file and it will start fe
 Wind-Visualiser-05/
 ├── index.html              # Main HTML file
 ├── css/
-│   └── styles.css          # All styling
+│   └── styles.css          # All styling including modal and effects
 ├── js/
-│   ├── config.js           # Configuration and settings
+│   ├── config.js           # Configuration and location settings
 │   └── app.js              # Main application logic
-├── docs/
-│   ├── API_SETUP.md        # API setup guide
-│   └── OPEN_METEO_GUIDE.md # Open-Meteo documentation
-├── assets/                 # Images and other assets
+├── Visual REfs/            # Reference images and assets
 ├── README.md               # This file
 ├── package.json            # Project metadata
+├── API_SETUP_GUIDE.md      # API setup documentation
 └── .gitignore             # Git ignore file
 ```
 
@@ -54,7 +97,7 @@ Wind-Visualiser-05/
 
 All settings are in `js/config.js`:
 
-- **Locations**: Add or modify Wellington region locations
+- **Locations**: Add or modify New Zealand locations
 - **Update Interval**: Change how often data refreshes (default: 5 minutes)
 - **Wind Speed Limits**: Adjust visualization ranges
 - **API Settings**: Open-Meteo API configuration
@@ -89,7 +132,7 @@ UPDATE_INTERVAL: 2 * 60 * 1000, // 2 minutes
 
 ### Styling Changes
 
-Edit `css/styles.css` to customize colors, layout, and appearance.
+Edit `css/styles.css` to customize colors, layout, modal appearance, and wave effects.
 
 ## 🛠️ Development
 
@@ -123,10 +166,10 @@ Edit `css/styles.css` to customize colors, layout, and appearance.
 3. Verify Open-Meteo API is accessible
 4. Check if locations are too close together (should be >11km apart)
 
-### Same Data for All Locations
-- Locations may be in the same Open-Meteo grid cell
-- Ensure locations are spread across different grid cells
-- Check coordinates in `js/config.js`
+### Modal Not Opening
+1. Ensure you're clicking on the location circles
+2. Check browser console for JavaScript errors
+3. Verify the modal overlay is properly positioned
 
 ### Performance Issues
 - Reduce update frequency in `js/config.js`
@@ -139,9 +182,11 @@ Edit `css/styles.css` to customize colors, layout, and appearance.
 - [ ] Wind gust information
 - [ ] Weather alerts and warnings
 - [ ] More detailed weather parameters
-- [ ] Interactive map interface
+- [ ] Interactive map interface with terrain
 - [ ] Data export functionality
 - [ ] Mobile app version
+- [ ] Additional wave effects and animations
+- [ ] Sound effects based on wind conditions
 
 ## 🤝 Contributing
 
@@ -158,7 +203,7 @@ This project is open source and available under the MIT License.
 ## 🙏 Acknowledgments
 
 - **Open-Meteo** for providing free weather data
-- **Wellington region** for being such a windy place
+- **New Zealand** for being such a beautiful and windy country
 - **Open source community** for inspiration and tools
 
 ## 📞 Support
@@ -172,4 +217,4 @@ If you encounter any issues or have questions:
 
 ---
 
-**Made with ❤️ for Wellington's wind enthusiasts** 
+**Made with ❤️ for New Zealand's wind enthusiasts** 
