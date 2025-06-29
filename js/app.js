@@ -750,9 +750,9 @@ class WindVisualizer {
     if (this.apiStatus) {
       this.apiStatus.style.display = 'none';
     }
-    const exploreTip = document.getElementById('explore-tip');
-    if (exploreTip) {
-      exploreTip.style.display = 'none';
+    const instructionsOverlay = document.getElementById('instructions-overlay');
+    if (instructionsOverlay) {
+      instructionsOverlay.classList.add('hidden');
     }
     this.modal.classList.add('active');
     this.startModalWaveEffect();
@@ -768,13 +768,13 @@ class WindVisualizer {
     if (this.appTitle) {
       this.appTitle.textContent = 'Aotearoa';
     }
-    // Show API status and explore tip
+    // Show API status and instructions overlay
     if (this.apiStatus) {
       this.apiStatus.style.display = 'flex';
     }
-    const exploreTip = document.getElementById('explore-tip');
-    if (exploreTip && !this.instructionsHidden) {
-      exploreTip.style.display = 'block';
+    const instructionsOverlay = document.getElementById('instructions-overlay');
+    if (instructionsOverlay && !this.instructionsHidden) {
+      instructionsOverlay.classList.remove('hidden');
     }
     this.currentModalWindSpeed = null;
     this.currentModalWindDir = null;
@@ -879,19 +879,29 @@ class WindVisualizer {
   }
 
   hideInstructionsOnInteraction() {
-    const exploreTip = document.getElementById('explore-tip');
+    const instructionsOverlay = document.getElementById('instructions-overlay');
     const mapContainer = document.getElementById('map-zoom-container');
-    if (!exploreTip || !mapContainer) return;
+    if (!instructionsOverlay || !mapContainer) return;
+    
     const hide = () => {
-      exploreTip.style.display = 'none';
+      instructionsOverlay.classList.add('hidden');
       this.instructionsHidden = true;
-      mapContainer.removeEventListener('mousedown', hide);
-      mapContainer.removeEventListener('wheel', hide);
-      mapContainer.removeEventListener('touchstart', hide);
     };
-    mapContainer.addEventListener('mousedown', hide);
-    mapContainer.addEventListener('wheel', hide);
-    mapContainer.addEventListener('touchstart', hide);
+    
+    // Hide on overlay click
+    instructionsOverlay.addEventListener('click', hide);
+    
+    // Hide on map interaction
+    const hideOnMapInteraction = () => {
+      hide();
+      mapContainer.removeEventListener('mousedown', hideOnMapInteraction);
+      mapContainer.removeEventListener('wheel', hideOnMapInteraction);
+      mapContainer.removeEventListener('touchstart', hideOnMapInteraction);
+    };
+    
+    mapContainer.addEventListener('mousedown', hideOnMapInteraction);
+    mapContainer.addEventListener('wheel', hideOnMapInteraction);
+    mapContainer.addEventListener('touchstart', hideOnMapInteraction);
   }
 }
 
