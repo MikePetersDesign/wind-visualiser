@@ -287,7 +287,7 @@ class WindVisualizer {
     if (mapContainer) mapContainer.style.display = '';
     if (this.playBtn) this.playBtn.disabled = false;
     if (exploreTip && !this.instructionsHidden) exploreTip.style.display = '';
-    // Autoplay once data is loaded
+    // Autoplay once data is loaded, regardless of instructions overlay state
     if (!this.isPlaying && this.currentHistoricalIndex === 0) {
       this.startHistoricalPlay();
     }
@@ -881,6 +881,7 @@ class WindVisualizer {
   hideInstructionsOnInteraction() {
     const instructionsOverlay = document.getElementById('instructions-overlay');
     const mapContainer = document.getElementById('map-zoom-container');
+    const exploreButton = document.getElementById('explore-button');
     if (!instructionsOverlay || !mapContainer) return;
     
     const hide = () => {
@@ -890,6 +891,14 @@ class WindVisualizer {
     
     // Hide on overlay click
     instructionsOverlay.addEventListener('click', hide);
+    
+    // Hide on explore button click
+    if (exploreButton) {
+      exploreButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent overlay click event
+        hide();
+      });
+    }
     
     // Hide on map interaction
     const hideOnMapInteraction = () => {
