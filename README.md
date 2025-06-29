@@ -217,4 +217,4 @@ If you encounter any issues or have questions:
 
 ---
 
-**Made with ❤️ for New Zealand's wind enthusiasts** 
+**Made with ❤️ for New Zealand's wind enthusiasts** # Updated Sun Jun 29 21:07:24 NZST 2025
