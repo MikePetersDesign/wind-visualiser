@@ -140,7 +140,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  z-index: 4000; /* Higher than hotspot overlay */
+  z-index: 5000; /* Higher than modal overlay */
   gap: 0.2vw;
 }
 #top-left-container #app-title,
@@ -246,7 +246,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1vw;
-  z-index: 4000; /* Higher than hotspot overlay */
+  z-index: 5000; /* Higher than modal overlay */
   pointer-events: auto;
   padding: 0 2vw;
   box-sizing: border-box;
@@ -379,7 +379,7 @@ body {
   background: none;
   flex-direction: row;
   pointer-events: none;
-  z-index: 1001;
+  z-index: 5000; /* Higher than modal overlay */
   letter-spacing: 0.05em;
   text-transform: none;
 }
@@ -409,7 +409,7 @@ body {
   text-transform: none;
   background: none;
   pointer-events: none;
-  z-index: 1001;
+  z-index: 5000; /* Higher than modal overlay */
   text-align: right;
 }
 
@@ -423,7 +423,7 @@ body {
   color: #fff;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  z-index: 1001;
+  z-index: 5000; /* Higher than modal overlay */
   background: none;
   pointer-events: none;
   padding: 0;
@@ -452,7 +452,7 @@ body {
   background: none;
   pointer-events: none;
   user-select: none;
-  z-index: 4000; /* Higher than hotspot overlay */
+  z-index: 5000; /* Higher than modal overlay */
   display: block;
   white-space: nowrap;
   padding: 0 2vw;
@@ -467,7 +467,7 @@ body {
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 2000;
+  z-index: 4000; /* Above hotspot overlay, below main UI */
   display: none;
   align-items: center;
   justify-content: center;
@@ -504,7 +504,7 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  z-index: 2001;
+  z-index: 4001; /* Above modal content */
   pointer-events: auto; /* Re-enable pointer events for header */
 }
 
